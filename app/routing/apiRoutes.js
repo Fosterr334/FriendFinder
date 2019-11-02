@@ -4,8 +4,8 @@
 // These data sources hold arrays of information on table-data, waitinglist, etc.
 // ===============================================================================
 
-var userData = require("../data/friends.js");
-console.log("test");
+var friendslist = require("../data/friends.js");
+
 
 // ===============================================================================
 // ROUTING
@@ -14,15 +14,12 @@ console.log("test");
 module.exports = function(app) {
   // API GET Requests
   app.get("/api/friends", function(req, res) {
-    console.log(`Got the data in the GET
-    ${userData}`)
-    res.json(userData);
+    res.json(friendslist);
   });
 
   // API POST Requests
-    app.post("/api/survey", function(req, res) {
-    console.log(`Got the data in the POST
-    ${userData}`)
-
+    app.post("/api/friends", function(req, res) {
+      friendslist.push(req.body);
+      res.json(true);
   });
 };

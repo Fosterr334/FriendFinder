@@ -14,13 +14,32 @@
 </head>
 <body>
    <div class="container">
+      <div id="theModal" class="modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Your Match</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p id="results">Modal body text goes here.</p>
+                <img id="showPic" src=""/>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
        <h1>Survey Questions</h1>
        <hr>
         <h3>About me </h3>
         <h4>Name(required):</h4>
-        <input type="text" class="form-control">
+        <input type="text" id="nameData" class="form-control">
         <h4>Link to Photo Image (Required)</h4>
-        <input type="text" class="form-control">
+        <input type="text" id="picData" class="form-control">
                 <h3><strong>Question 1</strong></h3>
                 <h4>You are always hungry</h4>
                 <select class="chosen-select" id="q1">
@@ -123,8 +142,70 @@
                 </select>
                 <br>
                 <br>
-                <button type="button" class="btn btn-primary btn-lg btn-block">Submit</button>
+                <button type="button" id="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
 
   </div>
 </body>
+<script type="text/javascript">
+
+function friendsQuery(subject){
+  $.ajax({url: "/api/friends", method:"GET"})
+  .then(function(friendslist){
+    console.table({friendslist,subject})
+    let bestFriend = {};
+    let bestFriendScore = 100;
+    for (let i=0;i<friendslist.length;i++){
+      let scoring = 0;
+      for(let x=0;x<friendslist[i].scores.length;x++){
+        if(subject.scores[x] === ""){
+          $("#results").text(`you need to fully finsh the survey`)
+          $("#theModal").modal("show")
+          break
+        }
+        else{
+          scoring += Math.abs(friendslist[i].scores[x] - subject.scores[x])
+        }
+      }
+      if (scoring < bestFriendScore){
+        bestfriend = friendslist[i]
+        bestFriendScore = scoring
+      }  
+    }
+    $("#results").text(`Your best friend is ${bestfriend.name} with only a difference of ${bestFriendScore}`)
+    $("#showPic").attr("src",bestfriend.photo)
+    $("#theModal").modal("show")
+    $.post("/api/friends", subject,
+      function(data) {
+
+      });
+  })
+}
+function dataGrab(){
+  //loop to grab answers
+  const answerArray =[];
+  for (let i=1;i<11;i++){
+    answerArray.push($(`#q${i}`).val())
+  }
+  //puts all the information into a object
+  var subject = {
+    name:$("#nameData").val(),
+    photo:$("#picData").val(),
+    scores:answerArray
+  }
+  friendsQuery(subject);
+  clear();
+}
+function clear(){
+  $("#nameData").val("");
+  $("#picData").val("");
+  for (let i=1;i<11;i++){
+  $(`#q${i}`).val("")
+  };
+}
+$('#submit').on('click',dataGrab)
+
+
+
+
+</script>
 </html>

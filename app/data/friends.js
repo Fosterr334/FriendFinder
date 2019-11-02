@@ -1,7 +1,7 @@
-var usersArray =[ 
+var friendslist =[ 
 {
     "name":"Ahmed",
-    "photo":"https://media.licdn.com/mpr/mpr/shrinknp_400_400/p/6/005/064/1bd/3435aa3.jpg",
+    "photo":"https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
     "scores":[
         5,
         1,
@@ -15,6 +15,7 @@ var usersArray =[
         1
       ]
   },
+];
 
-]
+module.exports = friendslist
   
